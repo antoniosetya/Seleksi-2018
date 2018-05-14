@@ -1,7 +1,7 @@
 all: clean run
 
 clean:
-	$(RM) .\\data\\*.json
+	del .\\data\\*.json
 
 run:
 	python ./src/main.py
