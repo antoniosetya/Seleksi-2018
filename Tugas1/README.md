@@ -1,17 +1,12 @@
 <h1 align="center">
   <br>
-  Tugas 1 Seleksi Warga Basdat 2018
+  Pok%C3%A9dex Scraper
   <br>
   <br>
 </h1>
 
-<h2 align="center">
-  <br>
-  Data Scraping
-  <br>
-  <br>
-</h2>
-
+### Description
+Program ini melakukan scraping data Pokemon yang berasal dari [Bulbapedia](https://bulbapedia.bulbagarden.net). Program dibuat dalam bahasa Python 3.
 
 ### Specifications
 
@@ -68,16 +63,101 @@ Preprocessing contohnya :
 - Author
 ```
 
-<h1 align="center">
-  <br>
-  Selamat BerEksplorasi!
-  <br>
-  <br>
-</h1>
+### How To Use
+1. Pastikan Python 3 sudah terpasang di komputer. Jika belum, silahkan lihat (ini)[https://www.python.org/] untuk memasang Python.
+2. Jalankan ```make build``` untuk memasang _dependencies_ yang diperlukan program. Perintah ini cukup dijalankan sekali
+3. Jalankan ```make run```. Program akan mengambil data awal ketika pertama kali dijalankan.
+4. Masukkan angka pilihan menu untuk berinteraksi dengan program.
 
-<p align="center">
-  <br>
-  Basdat Industries - Lab Basdat 2018
-  <br>
-  <br>
-</p>
+* Untuk pengguna dengan OS Linux, ```make clean``` tidak akan berjalan dengan sempurna. Gunakan ```rm ./data/*.json``` untuk mengganti perintah tersebut.
+
+### JSON Structure
+Data hasil tersimpan di ```main_data.json``` dengan format seperti ini :
+```
+[
+  ...
+  {
+    "no": 9,
+    "name": "Blastoise",
+    "made_in": "Generation I",
+    "type": "Water",
+    "ability": [
+      "Torrent",
+      "Rain Dish"
+    ],
+    "weight": "85.5 kg",
+    "stats": {
+      "hp": "79",
+      "atk": "83",
+      "def": "100",
+      "spatk": "85",
+      "spdef": "105",
+      "spe": "78"
+    }
+  },
+  {
+    "no": 9,
+    "name": "Mega Blastoise",
+    "made_in": "Generation VI",
+    "type": "Unknown",
+    "ability": [
+      "Mega Launcher"
+    ],
+    "weight": "101.1 kg",
+    "stats": {
+      "hp": "79",
+      "atk": "103",
+      "def": "120",
+      "spatk": "135",
+      "spdef": "115",
+      "spe": "78"
+    }
+  }
+...
+]
+```
+
+Program akan mengambil pula _type chart_ dan menyimpannya dalam ```type_chart.json``` dengan format seperti ini :
+```
+{
+  "Normal": {
+    "Normal": 1,
+    "Fighting": 1,
+    "Flying": 1,
+    "Poison": 1,
+    "Ground": 1,
+    "Rock": 0.5,
+    "Bug": 1,
+    "Ghost": 0,
+    "Steel": 0.5,
+    "Fire": 1,
+    "Water": 1,
+    "Grass": 1,
+    "Electric": 1,
+    "Psychic": 1,
+    "Ice": 1,
+    "Dragon": 1,
+    "Dark": 1,
+    "Fairy": 1
+  }
+  ...
+}
+```
+
+### Screenshots
+![](screenshots/main_2.png)
+![](screenshots/in_action.png)
+
+### Reference
+  Libraries:
+  * (BeautifulSoup)[https://crummy.com/software/BeautifulSoup/bs4/doc/]
+
+  Data Source:
+  * (Bulbapedia)[https://bulbapedia.bulbagarden.net]
+
+### Author
+  Nama : Antonio Setya
+
+
+### Additional Notes
+  Data yang disediakan dalam program ini berada dibawah lisensi _Creative Commons_. Anda dapat menggunakan dan menyebarluaskan data ini secara bebas untuk keperluan non-komersil. Untuk lebih jelas, silahkan lihat (link)[https://creativecommons.org/licenses/by-nc-sa/2.5/] ini.
