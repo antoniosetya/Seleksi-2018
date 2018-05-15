@@ -24,6 +24,7 @@ def IsNmbrInList(data,number):
     return found
 
 def GetInitList():
+    global pokemons
     # Grabbing initial Pokemon data (list of all Pokemon)
     # Request headers. Without this, Bulbapedia will reject the request (as error 403 Forbidden)
     print("Requesting data from server...")
@@ -87,84 +88,147 @@ def SingleScrape(index):
     main_data = soup.find("div",attrs={"id" : "mw-content-text"})
     metadata = main_data.find("table",attrs={"class" : "roundy"}).find_all("td",attrs={"class" : "roundy"})
     # Determines whether this Pokemon has alternate forms
-    # LATERRR
+    meta_pic = (main_data.find("table",attrs={"class" : "roundy"}).find_all("table",attrs={"class" : "roundy"}))[1].find_all("a",attrs={"class" : "image"})
+    forms_names = []
+    if (len(meta_pic) > 1):
+        try:
+            for pic in meta_pic:
+                temp = pic.findNext("small").contents[0]
+                if temp not in forms_names:
+                    forms_names.append(temp)
+        except:
+            forms_names.append(pokemons[index]["name"])
+    else:
+        forms_names.append(pokemons[index]["name"])
+    forms_count = len(forms_names)
 
     # Extracts type data
-    meta_type = (metadata[1].find_all("table"))[1].find_all("td")
     type = []
-    for td in meta_type:
-        type.append(td.find("span").find("b").contents[0])
-    #print(type)
+    meta_type = metadata[1].find_all("table")
+    list_iter = 0
+    for type_cell in meta_type[1:]:
+        temp_type = type_cell.find_all("td")
+        type.append([])
+        for td in temp_type:
+            type[list_iter].append(td.find("span").find("b").contents[0])
+        list_iter = list_iter + 1
+    # Cleans the list from garbage
+    type = [x for x in type if x[0] != "Unknown"]
 
     # Extracts abilities
     meta_ability = metadata[2].find_all("td")
     ability = []
+    for iter in range(0,forms_count):
+        ability.append([])
     for td in meta_ability:
-        if not td.has_attr("style"):
-            ability.append(td.find("a").find("span").contents[0])
-    # If no ability in list, then the first td element contains that ability
-    # This occurs when a Pokemon has only one alternative ability
-    if not ability:
-        ability.append(meta_ability[0].find("span").contents[0])
-    #print(ability)
+        if forms_count > 1:
+            if (td.find("small") is None):
+                span = td.find_all("span")
+                for sp in span:
+                    ability[0].append(sp.contents[0])
+            elif ("Hidden Ability" in (td.find("small").contents)):
+                ability[0].append(td.find("span").contents[0])
+            else:
+                try:
+                    ability[forms_names.index(td.find("small").contents[0])].append(td.find("span").contents[0])
+                except:
+                    span = td.find_all("span")
+                    for sp in span:
+                        ability[0].append(sp.contents[0])
+        else:
+            span = td.find_all("span")
+            for sp in span:
+                ability[0].append(sp.contents[0])
 
-    # Extracts height and weight
-    meta_h = metadata[6]
-    meta_w = metadata[7]
-    height = (((meta_h.find_all("tr"))[0].find_all("td")[1].contents[0])[1:])[:-1]
-    weight = (((meta_w.find_all("tr"))[0].find_all("td")[1].contents[0])[1:])[:-1]
-    #print(height + " | " + weight)
+    ability = [x for x in ability if x != []]
+    for iter in range(0,len(ability)):
+        ability[iter] = list(set(ability[iter]))
+        try:
+            ability[iter].remove("Cacophony")
+            ability[iter].remove("*")
+        except:
+            pass
+
+    # Extracts weight
+    meta_w = metadata[7].find_all("tr")
+    weight = []
+    for tr in meta_w[0::2]:
+        temp = tr.find_all("td")
+        temp = (temp[1].contents[0])[1:-1]
+        if (temp != "0 kg"):
+            weight.append(temp)
 
     # Extracts when this Pokemon is introduced
     when_str = (main_data.find_all("table",attrs={"class" : "roundy"}))[23].find("th").find("small").contents[0]
-    #print(when_str)
 
     # Extracts base stats of this Pokemon
-    stat_header = soup.find("span",attrs={"id" : "Base_stats"})
+    stat_header = soup.find("span",attrs={"id" : "Stats"})
     if (stat_header is None):
-        # Also for Hoopa, dunno why
-        stat_header = soup.find("span",attrs={"id" : "Stats"}).next_element.next_element.next_element
-    try:
-        stat_table = stat_header.next_element.next_element.next_element.next_element.next_element.next_element.next_element
-        stat_elements = stat_table.find_all("tr")
-        hp = ((stat_elements[2].find("table").find_all("th"))[1].contents[0])[1:-1]
-    except:
+        stat_header = soup.find("span",attrs={"id" : "Base_stats"})
+    statuses = []
+    stat_table = stat_header.findNext("table")
+    for iter in range(0,forms_count):
         try:
-            stat_table = stat_header.next_element.next_element.next_element
             stat_elements = stat_table.find_all("tr")
             hp = ((stat_elements[2].find("table").find_all("th"))[1].contents[0])[1:-1]
+            atk = ((stat_elements[4].find("table").find_all("th"))[1].contents[0])[1:-1]
+            defn = ((stat_elements[6].find("table").find_all("th"))[1].contents[0])[1:-1]
+            spatk = ((stat_elements[8].find("table").find_all("th"))[1].contents[0])[1:-1]
+            spdef = ((stat_elements[10].find("table").find_all("th"))[1].contents[0])[1:-1]
+            spe = ((stat_elements[12].find("table").find_all("th"))[1].contents[0])[1:-1]
+            statuses.append({"hp" : hp, "atk" : atk, "def" : defn, "spatk" : spatk, "spdef" : spdef, "spe" : spe})
+            stat_table = stat_elements[len(stat_elements) - 1].findNext("table")
         except:
-            # Exclusive for Hoopa, dunno why
-            stat_table = stat_header.next_element.next_element.next_element.next_element
-            print(stat_table)
-            stat_elements = stat_table.find_all("tr")
-            hp = ((stat_elements[2].find("table").find_all("th"))[1].contents[0])[1:-1]
-        #print(hp)
-    atk = ((stat_elements[4].find("table").find_all("th"))[1].contents[0])[1:-1]
-    #print(atk)
-    defn = ((stat_elements[6].find("table").find_all("th"))[1].contents[0])[1:-1]
-    #print(defn)
-    spatk = ((stat_elements[8].find("table").find_all("th"))[1].contents[0])[1:-1]
-    #print(spatk)
-    spdef = ((stat_elements[10].find("table").find_all("th"))[1].contents[0])[1:-1]
-    #print(spdef)
-    spe = ((stat_elements[12].find("table").find_all("th"))[1].contents[0])[1:-1]
-    #print(spe)
+            break
 
-    # Inserting results into out array
-    out = {}
-    out["no"] = pokemons[index]["no"]
-    out["name"] = pokemons[index]["name"]
-    out["type"] = type
-    out["ability"] = ability
-    out["weight"] = weight
-    out["stats"] = {"hp" : hp, "atk" : atk, "def" : defn, "spatk" : spatk, "spdef" : spdef, "spe" : spe}
+    print("Found : " + repr(forms_names))
+    # Inserting results into out array. Forms are splitted into individual entries (list element)
+    out = []
+    for iter in range(0,forms_count):
+        out.append({})
+        # Pokemon Dex Number and it's name. Adds the real name if scrapped name doesn't contain the real name
+        out[iter]["no"] = pokemons[index]["no"]
+        out[iter]["name"] = forms_names[iter]
+        if (pokemons[index]["name"] not in out[iter]["name"]):
+            out[iter]["name"] = pokemons[index]["name"] + " (" + out[iter]["name"] + ")"
+        # When this Pokemon is introduced. First element always introduced on <when_str>
+        if (iter >= 1):
+            if ("Mega" in out[iter]["name"]):
+                out[iter]["made_in"] = "Generation VI"
+            elif ("Alolan" in out[iter]["name"]):
+                out[iter]["made_in"] = "Generation VII"
+            else:
+                out[iter]["made_in"] = when_str
+        else:
+            out[iter]["made_in"] = when_str
+        # Pokemon type
+        if (iter >= len(type)):
+            out[iter]["type"] = type[len(type) - 1]
+        else:
+            out[iter]["type"] = type[iter]
+        # Pokemon abilities
+        if (iter >= len(ability)):
+            out[iter]["ability"] = ability[len(ability) - 1]
+        else:
+            out[iter]["ability"] = ability[iter]
+        # Pokemon weight
+        if (iter >= len(weight)):
+            out[iter]["weight"] = weight[len(weight) - 1]
+        else:
+            out[iter]["weight"] = weight[iter]
+        # Pokemon status
+        if (iter >= len(statuses)):
+            out[iter]["stats"] = statuses[len(statuses) - 1]
+        else:
+            out[iter]["stats"] = statuses[iter]
     return out
 
 def Scrape(i,initial = [],init_not_scrapped = []):
     global pokemons
     count = len(pokemons)
     out = initial
+    out_count = len(out)
+    out_real = out_count
     not_scrapped = init_not_scrapped
     curIndex = 0
     if (i < count):
@@ -172,7 +236,10 @@ def Scrape(i,initial = [],init_not_scrapped = []):
             for now in range(i,count):
                 try:
                     print("Scraping " + pokemons[now]["name"] + " (#" + str(pokemons[now]["no"]) + ")...")
-                    out.append(SingleScrape(now))
+                    temp = SingleScrape(now)
+                    out_count = out_count + len(temp)
+                    out_real = out_real + len(temp)
+                    out = out + temp
                     print(pokemons[now]["name"] + " (#" + str(pokemons[now]["no"]) + ") scrapped")
                 except KeyboardInterrupt:
                     print("Ctrl-C pressed, stopping...")
@@ -186,39 +253,57 @@ def Scrape(i,initial = [],init_not_scrapped = []):
                     else:
                         print("Error in scraping " + pokemons[now]["name"] + " (#" + str(pokemons[now]["no"]) + "), skipping...")
                 finally:
-                    time.sleep(0.5)
+                    if (out_count >= 50):
+                        print("Saving currently scrapped entries to file...")
+                        try:
+                            with open(data_dir + "main_data.json","r") as f:
+                                prev_data = json.load(f)
+                        except FileNotFoundError:
+                            prev_data = []
+                        out =  prev_data + out
+                        # Sort data based on Dex number
+                        out.sort(key=lambda x:x["no"])
+                        with open(data_dir + "main_data.json","w") as f:
+                            json.dump(out,f,indent=2)
+                            out = []
+                            prev_data = []
+                            out_count = 0
+                        print("Saved, resuming scrapping...")
+                    time.sleep(0.25)
         except KeyboardInterrupt:
             print("Ctrl-C pressed, stopping...")
             pass
     else:
         now = 807
+    if ((now + 1) == count):
+        now = now + 1
     print("\n")
     state = {}
     state["lastScrapped"] = now
     state["notScrapped"] = not_scrapped
-    try:
-        if (out[-1]["no"] == (count - 1)):
-            state["lastScrapped"] = state["lastScrapped"] + 1
-    except:
-        pass
-    count = len(out)
-    try:
-        with open(data_dir + "main_data.json","r") as f:
-            prev_data = json.load(f)
-        print("Found " + str(len(prev_data)) + " entries already scrapped")
-    except FileNotFoundError:
-        prev_data = []
-    except Exception as e:
-        traceback.print_exc()
-        prev_data = []
-    out = prev_data + out
-    # Sort data based on Dex number
-    out.sort(key=lambda x:x["no"])
+    print("Saving unsaved entries...")
+    if (out_count > 0):
+        try:
+            if (out[-1]["no"] == (count - 1)):
+                state["lastScrapped"] = state["lastScrapped"] + 1
+        except:
+            pass
+        try:
+            with open(data_dir + "main_data.json","r") as f:
+                prev_data = json.load(f)
+        except FileNotFoundError:
+            prev_data = []
+        except Exception as e:
+            traceback.print_exc()
+            prev_data = []
+        out = prev_data + out
+        # Sort data based on Dex number
+        out.sort(key=lambda x:x["no"])
+        with open(data_dir + "main_data.json","w") as f:
+            json.dump(out,f,indent=2)
     with open(data_dir + "state.json","w") as f:
         json.dump(state,f)
-    with open(data_dir + "main_data.json","w") as f:
-        json.dump(out,f,indent=2)
-    print("Saved " + str(count) + " entries ( + " + str(len(prev_data)) + " old entries) with " + str(len(not_scrapped)) + " entries skipped.\n")
+    print("Saved " + str(out_real) + " entries. " + str(len(not_scrapped)) + " entries skipped.\n")
 
 # Trying to load initial data
 try:
@@ -281,7 +366,7 @@ while not valid:
                 current = state["notScrapped"].pop()
                 try:
                     print("Scraping " + pokemons[current]["name"] + " (#" + str(pokemons[current]["no"]) + ")...")
-                    temp.append(SingleScrape(current))
+                    temp = temp + SingleScrape(current)
                     print(pokemons[current]["name"] + " (#" + str(pokemons[current]["no"]) + ") scrapped")
                 except KeyboardInterrupt:
                     state["notScrapped"].insert(0,current)
