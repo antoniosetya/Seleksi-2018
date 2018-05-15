@@ -1,12 +1,12 @@
 <h1 align="center">
   <br>
-  Pok%C3%A9dex Scraper
+  Pokédex Scraper
   <br>
   <br>
 </h1>
 
 ### Description
-Program ini melakukan scraping data Pokemon yang berasal dari [Bulbapedia](https://bulbapedia.bulbagarden.net). Program dibuat dalam bahasa Python 3.
+Program ini melakukan scraping data Pokémon yang berasal dari [Bulbapedia](https://bulbapedia.bulbagarden.net). Program dibuat dalam bahasa Python 3.
 
 ### Specifications
 
@@ -64,7 +64,7 @@ Preprocessing contohnya :
 ```
 
 ### How To Use
-1. Pastikan Python 3 sudah terpasang di komputer. Jika belum, silahkan lihat (ini)[https://www.python.org/] untuk memasang Python.
+1. Pastikan Python 3 sudah terpasang di komputer. Jika belum, silahkan lihat [ini](https://www.python.org/) untuk memasang Python.
 2. Jalankan ```make build``` untuk memasang _dependencies_ yang diperlukan program. Perintah ini cukup dijalankan sekali
 3. Jalankan ```make run```. Program akan mengambil data awal ketika pertama kali dijalankan.
 4. Masukkan angka pilihan menu untuk berinteraksi dengan program.
@@ -150,14 +150,16 @@ Program akan mengambil pula _type chart_ dan menyimpannya dalam ```type_chart.js
 
 ### Reference
   Libraries:
-  * (BeautifulSoup)[https://crummy.com/software/BeautifulSoup/bs4/doc/]
+  * [BeautifulSoup](https://crummy.com/software/BeautifulSoup/bs4/doc/)
 
   Data Source:
-  * (Bulbapedia)[https://bulbapedia.bulbagarden.net]
+  * [Bulbapedia](https://bulbapedia.bulbagarden.net)
 
 ### Author
   Nama : Antonio Setya
-
+  Email : antonio_setya@hotmail.com
 
 ### Additional Notes
-  Data yang disediakan dalam program ini berada dibawah lisensi _Creative Commons_. Anda dapat menggunakan dan menyebarluaskan data ini secara bebas untuk keperluan non-komersil. Untuk lebih jelas, silahkan lihat (link)[https://creativecommons.org/licenses/by-nc-sa/2.5/] ini.
+  Data yang disediakan dalam program ini berada dibawah lisensi _Creative Commons_. Anda dapat menggunakan dan menyebarluaskan data ini secara bebas untuk keperluan non-komersil. Untuk lebih jelas, silahkan lihat [link](https://creativecommons.org/licenses/by-nc-sa/2.5/deed.id) ini.
+
+  _Data provided by this program is licensed under the Creative Commons license. You can use and share this data for non-commercial purposes. For more info, visit_ [this link](https://creativecommons.org/licenses/by-nc-sa/2.5/)
