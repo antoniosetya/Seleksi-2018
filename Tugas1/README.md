@@ -156,8 +156,8 @@ Program akan mengambil pula _type chart_ dan menyimpannya dalam ```type_chart.js
   * [Bulbapedia](https://bulbapedia.bulbagarden.net)
 
 ### Author
-  Nama : Antonio Setya
-  Email : antonio_setya@hotmail.com
+  * Nama : Antonio Setya
+  * Email : antonio_setya@hotmail.com
 
 ### Additional Notes
   Data yang disediakan dalam program ini berada dibawah lisensi _Creative Commons_. Anda dapat menggunakan dan menyebarluaskan data ini secara bebas untuk keperluan non-komersil. Untuk lebih jelas, silahkan lihat [link](https://creativecommons.org/licenses/by-nc-sa/2.5/deed.id) ini.
