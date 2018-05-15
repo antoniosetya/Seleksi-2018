@@ -9,6 +9,8 @@ data_dir = "./data/"
 region_code = ["KanDex","JDex","HDex","SDex","UDex","KalDex","ADex"]
 pokemons = []
 state = {}
+onErrorStop = False
+exitWhenDone = True
 
 def CleanDexNmbr(nmbr):
     return int(nmbr[2:5])
@@ -100,6 +102,10 @@ def SingleScrape(index):
     for td in meta_ability:
         if not td.has_attr("style"):
             ability.append(td.find("a").find("span").contents[0])
+    # If no ability in list, then the first td element contains that ability
+    # This occurs when a Pokemon has only one alternative ability
+    if not ability:
+        ability.append(meta_ability[0].find("span").contents[0])
     #print(ability)
 
     # Extracts height and weight
@@ -114,14 +120,25 @@ def SingleScrape(index):
     #print(when_str)
 
     # Extracts base stats of this Pokemon
+    stat_header = soup.find("span",attrs={"id" : "Base_stats"})
+    if (stat_header is None):
+        # Also for Hoopa, dunno why
+        stat_header = soup.find("span",attrs={"id" : "Stats"}).next_element.next_element.next_element
     try:
-        stat_table = main_data.find("span",attrs={"id" : "Base_stats"}).next_element.next_element.next_element.next_element.next_element.next_element.next_element
+        stat_table = stat_header.next_element.next_element.next_element.next_element.next_element.next_element.next_element
         stat_elements = stat_table.find_all("tr")
         hp = ((stat_elements[2].find("table").find_all("th"))[1].contents[0])[1:-1]
     except:
-        stat_table = main_data.find("span",attrs={"id" : "Base_stats"}).next_element.next_element.next_element
-        stat_elements = stat_table.find_all("tr")
-        hp = ((stat_elements[2].find("table").find_all("th"))[1].contents[0])[1:-1]
+        try:
+            stat_table = stat_header.next_element.next_element.next_element
+            stat_elements = stat_table.find_all("tr")
+            hp = ((stat_elements[2].find("table").find_all("th"))[1].contents[0])[1:-1]
+        except:
+            # Exclusive for Hoopa, dunno why
+            stat_table = stat_header.next_element.next_element.next_element.next_element
+            print(stat_table)
+            stat_elements = stat_table.find_all("tr")
+            hp = ((stat_elements[2].find("table").find_all("th"))[1].contents[0])[1:-1]
         #print(hp)
     atk = ((stat_elements[4].find("table").find_all("th"))[1].contents[0])[1:-1]
     #print(atk)
@@ -144,37 +161,55 @@ def SingleScrape(index):
     out["stats"] = {"hp" : hp, "atk" : atk, "def" : defn, "spatk" : spatk, "spdef" : spdef, "spe" : spe}
     return out
 
-def Scrape(i,initial = []):
+def Scrape(i,initial = [],init_not_scrapped = []):
     global pokemons
     count = len(pokemons)
     out = initial
-    not_scrapped = []
+    not_scrapped = init_not_scrapped
     curIndex = 0
-    try:
-        for now in range(i,count):
-            try:
-                print("Scraping " + pokemons[now]["name"] + " (#" + str(pokemons[now]["no"]) + ")...")
-                out.append(SingleScrape(now))
-                print(pokemons[now]["name"] + " (#" + str(pokemons[now]["no"]) + ") scrapped")
-            except KeyboardInterrupt:
-                print("Ctrl-C pressed, stopping...")
-                break
-            except:
-                traceback.print_exc()
-                print("Error in scraping " + pokemons[now]["name"] + " (#" + str(pokemons[now]["no"]) + "), skipping...")
-                not_scrapped.append(now)
-            finally:
-                time.sleep(0.5)
-    except KeyboardInterrupt:
-        print("Ctrl-C pressed, stopping...")
-        pass
+    if (i < count):
+        try:
+            for now in range(i,count):
+                try:
+                    print("Scraping " + pokemons[now]["name"] + " (#" + str(pokemons[now]["no"]) + ")...")
+                    out.append(SingleScrape(now))
+                    print(pokemons[now]["name"] + " (#" + str(pokemons[now]["no"]) + ") scrapped")
+                except KeyboardInterrupt:
+                    print("Ctrl-C pressed, stopping...")
+                    break
+                except:
+                    traceback.print_exc()
+                    not_scrapped.append(now)
+                    if onErrorStop:
+                        print("Error in scraping " + pokemons[now]["name"] + " (#" + str(pokemons[now]["no"]) + "), stopping operation...")
+                        break
+                    else:
+                        print("Error in scraping " + pokemons[now]["name"] + " (#" + str(pokemons[now]["no"]) + "), skipping...")
+                finally:
+                    time.sleep(0.5)
+        except KeyboardInterrupt:
+            print("Ctrl-C pressed, stopping...")
+            pass
+    else:
+        now = 807
+    print("\n")
     state = {}
     state["lastScrapped"] = now
     state["notScrapped"] = not_scrapped
     try:
+        if (out[-1]["no"] == (count - 1)):
+            state["lastScrapped"] = state["lastScrapped"] + 1
+    except:
+        pass
+    count = len(out)
+    try:
         with open(data_dir + "main_data.json","r") as f:
             prev_data = json.load(f)
-    except:
+        print("Found " + str(len(prev_data)) + " entries already scrapped")
+    except FileNotFoundError:
+        prev_data = []
+    except Exception as e:
+        traceback.print_exc()
         prev_data = []
     out = prev_data + out
     # Sort data based on Dex number
@@ -182,9 +217,8 @@ def Scrape(i,initial = []):
     with open(data_dir + "state.json","w") as f:
         json.dump(state,f)
     with open(data_dir + "main_data.json","w") as f:
-        json.dump(out,f)
-    print("\n\n")
-    print("Saved " + str(len(out)) + " entries with " + str(len(not_scrapped)) + " entries skipped.")
+        json.dump(out,f,indent=2)
+    print("Saved " + str(count) + " entries ( + " + str(len(prev_data)) + " old entries) with " + str(len(not_scrapped)) + " entries skipped.\n")
 
 # Trying to load initial data
 try:
@@ -212,45 +246,61 @@ except FileNotFoundError:
 except JSONDecodeError:
     pass
 
-print("\nWhat do you want to do?")
-print("---------------------------------")
-print("1. Start scraping data.")
-print("2. Refresh initial data.")
-if state:
-    print("R. Resume from last scrapped data")
-print("E. Exit")
-print("---------------------------------")
-
 valid = False
 
 while not valid:
+    print("\nWhat do you want to do?")
+    print("---------------------------------")
+    print("1. Start scraping data.")
+    print("2. Refresh initial data.")
+    if state:
+        print("R. Resume from last scrapped data")
+    if onErrorStop:
+        print("S. Scraping setting : Stop when error occurs")
+    else:
+        print("S. Scraping setting : Ignore when error occurs")
+    if exitWhenDone:
+        print("EX. Scraping setting : Terminate when scraping finished")
+    else:
+        print("EX. Scraping setting : Do not terminate program when scraping finished")
+    print("E. Exit")
+    print("---------------------------------")
     sel = input("Your choice : ")
     if (sel == "1"):
         print("Scraping job started...!")
         Scrape(0)
-        valid = True
+        valid = exitWhenDone
     elif (sel == "2"):
         GetInitList()
-        valid = True
     elif ((sel == "R" or sel == "r") and state):
         temp = []
         if state["notScrapped"]:
             print("Scrapping errored entries first... ")
-            while state["notScrapped"]:
+            stop = False
+            while state["notScrapped"] and not stop:
                 current = state["notScrapped"].pop()
                 try:
                     print("Scraping " + pokemons[current]["name"] + " (#" + str(pokemons[current]["no"]) + ")...")
                     temp.append(SingleScrape(current))
                     print(pokemons[current]["name"] + " (#" + str(pokemons[current]["no"]) + ") scrapped")
                 except KeyboardInterrupt:
+                    state["notScrapped"].insert(0,current)
                     break
                 except:
                     traceback.print_exc()
                     print("Error in scraping " + pokemons[current]["name"] + " (#" + str(pokemons[current]["no"]) + "), will try later...")
-                    state["notScrapped"].append(current)
+                    state["notScrapped"].insert(0,current)
+                    if onErrorStop:
+                        stop = True
         print("Resuming...")
-        Scrape(state["lastScrapped"],temp)
-        valid = True
+        Scrape(state["lastScrapped"],temp,state["notScrapped"])
+        valid = exitWhenDone
+    elif (sel == "S" or sel == "s"):
+        onErrorStop = not onErrorStop
+        print("Setting changed.")
+    elif (sel == "EX" or sel == "ex" or sel == "Ex" or sel == "eX"):
+        exitWhenDone = not exitWhenDone
+        print("Setting changed.")
     elif (sel == "E" or sel == "e"):
         print("Buh bye...!")
         valid = True
