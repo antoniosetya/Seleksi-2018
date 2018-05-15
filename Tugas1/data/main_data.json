@@ -35,10 +35,13 @@
     "no": 3,
     "name": "Venusaur",
     "made_in": "Generation I",
-    "type": "Grass",
+    "type": [
+      "Grass",
+      "Poison"
+    ],
     "ability": [
-      "Overgrow",
-      "Chlorophyll"
+      "Chlorophyll",
+      "Overgrow"
     ],
     "weight": "100.0 kg",
     "stats": {
@@ -54,7 +57,10 @@
     "no": 3,
     "name": "Mega Venusaur",
     "made_in": "Generation VI",
-    "type": "Poison",
+    "type": [
+      "Grass",
+      "Poison"
+    ],
     "ability": [
       "Thick Fat"
     ],
@@ -200,10 +206,13 @@
     "no": 9,
     "name": "Blastoise",
     "made_in": "Generation I",
-    "type": "Water",
+    "type": [
+      "Water",
+      "Unknown"
+    ],
     "ability": [
-      "Torrent",
-      "Rain Dish"
+      "Rain Dish",
+      "Torrent"
     ],
     "weight": "85.5 kg",
     "stats": {
@@ -219,7 +228,10 @@
     "no": 9,
     "name": "Mega Blastoise",
     "made_in": "Generation VI",
-    "type": "Unknown",
+    "type": [
+      "Water",
+      "Unknown"
+    ],
     "ability": [
       "Mega Launcher"
     ],
@@ -317,7 +329,10 @@
     "no": 15,
     "name": "Beedrill",
     "made_in": "Generation I",
-    "type": "Bug",
+    "type": [
+      "Bug",
+      "Poison"
+    ],
     "ability": [
       "Swarm",
       "Sniper"
@@ -336,7 +351,10 @@
     "no": 15,
     "name": "Mega Beedrill",
     "made_in": "Generation VI",
-    "type": "Poison",
+    "type": [
+      "Bug",
+      "Poison"
+    ],
     "ability": [
       "Adaptability"
     ],
@@ -575,7 +593,10 @@
     "no": 25,
     "name": "Pikachu",
     "made_in": "Generation I",
-    "type": "Electric",
+    "type": [
+      "Electric",
+      "Unknown"
+    ],
     "ability": [
       "Static",
       "Lightning Rod"
@@ -594,7 +615,10 @@
     "no": 25,
     "name": "Cosplay Pikachu",
     "made_in": "Generation I",
-    "type": "Unknown",
+    "type": [
+      "Electric",
+      "Unknown"
+    ],
     "ability": [
       "Lightning Rod"
     ],
@@ -612,7 +636,10 @@
     "no": 25,
     "name": "Cap Pikachu",
     "made_in": "Generation I",
-    "type": "Unknown",
+    "type": [
+      "Electric",
+      "Unknown"
+    ],
     "ability": [],
     "weight": "6.0 kg",
     "stats": {
@@ -1499,10 +1526,13 @@
     "no": 65,
     "name": "Alakazam",
     "made_in": "Generation I",
-    "type": "Psychic",
+    "type": [
+      "Psychic",
+      "Unknown"
+    ],
     "ability": [
-      "Synchronize",
-      "Magic Guard"
+      "Magic Guard",
+      "Synchronize"
     ],
     "weight": "48.0 kg",
     "stats": {
@@ -1518,7 +1548,10 @@
     "no": 65,
     "name": "Mega Alakazam",
     "made_in": "Generation VI",
-    "type": "Unknown",
+    "type": [
+      "Psychic",
+      "Unknown"
+    ],
     "ability": [
       "Trace"
     ],
@@ -2556,7 +2589,10 @@
     "no": 115,
     "name": "Kangaskhan",
     "made_in": "Generation I",
-    "type": "Normal",
+    "type": [
+      "Normal",
+      "Unknown"
+    ],
     "ability": [
       "Early Bird",
       "Inner Focus"
@@ -2575,7 +2611,10 @@
     "no": 115,
     "name": "Mega Kangaskhan",
     "made_in": "Generation VI",
-    "type": "Unknown",
+    "type": [
+      "Normal",
+      "Unknown"
+    ],
     "ability": [
       "Parental Bond"
     ],
@@ -3612,7 +3651,10 @@
     "no": 172,
     "name": "Pichu",
     "made_in": "Generation II",
-    "type": "Electric",
+    "type": [
+      "Electric",
+      "Unknown"
+    ],
     "ability": [
       "Static",
       "Lightning Rod"
@@ -3631,7 +3673,10 @@
     "no": 172,
     "name": "Spiky-eared Pichu",
     "made_in": "Generation II",
-    "type": "Unknown",
+    "type": [
+      "Electric",
+      "Unknown"
+    ],
     "ability": [],
     "weight": "2.0 kg",
     "stats": {
@@ -6148,48 +6193,33 @@
     }
   },
   {
-    "no": 310,
-    "name": "Manectric",
+    "no": 311,
+    "name": "Plusle",
     "made_in": "Generation III",
     "type": "Electric",
-    "ability": [
-      "Static",
-      "Minus"
-    ],
-    "weight": "40.2 kg",
+    "ability": "Plus",
+    "weight": "4.2 kg",
     "stats": {
-      "hp": "70",
-      "atk": "75",
-      "def": "60",
-      "spatk": "105",
-      "spdef": "60",
-      "spe": "105"
-    }
-  },
-  {
-    "no": 310,
-    "name": "Mega Manectric",
-    "made_in": "Generation VI",
-    "type": "Unknown",
-    "ability": [
-      "Intimidate"
-    ],
-    "weight": "44.0 kg",
-    "stats": {
-      "hp": "70",
-      "atk": "75",
-      "def": "80",
-      "spatk": "135",
-      "spdef": "80",
-      "spe": "135"
+      "hp": "60",
+      "atk": "50",
+      "def": "40",
+      "spatk": "85",
+      "spdef": "75",
+      "spe": "95"
     }
   },
   {
     "no": 311,
     "name": "Plusle",
     "made_in": "Generation III",
-    "type": "Electric",
-    "ability": "Plus",
+    "type": [
+      "Electric",
+      "Unknown"
+    ],
+    "ability": [
+      "Plus",
+      "Lightning Rod"
+    ],
     "weight": "4.2 kg",
     "stats": {
       "hp": "60",
@@ -6895,13 +6925,15 @@
   },
   {
     "no": 351,
-    "name": "Normal",
+    "name": "Castform (Normal)",
     "made_in": "Generation III",
     "type": [
       "Normal",
       "Unknown"
     ],
-    "ability": "Forecast",
+    "ability": [
+      "Forecast"
+    ],
     "weight": "0.8 kg",
     "stats": {
       "hp": "70",
@@ -6914,13 +6946,13 @@
   },
   {
     "no": 351,
-    "name": "Sunny Form",
+    "name": "Castform (Sunny Form)",
     "made_in": "Generation III",
     "type": [
       "Fire",
       "Unknown"
     ],
-    "ability": "Forecast",
+    "ability": [],
     "weight": "0.8 kg",
     "stats": {
       "hp": "70",
@@ -6933,13 +6965,13 @@
   },
   {
     "no": 351,
-    "name": "Rainy Form",
+    "name": "Castform (Rainy Form)",
     "made_in": "Generation III",
     "type": [
       "Water",
       "Unknown"
     ],
-    "ability": "Forecast",
+    "ability": [],
     "weight": "0.8 kg",
     "stats": {
       "hp": "70",
@@ -6952,13 +6984,13 @@
   },
   {
     "no": 351,
-    "name": "Snowy Form",
+    "name": "Castform (Snowy Form)",
     "made_in": "Generation III",
     "type": [
       "Ice",
       "Unknown"
     ],
-    "ability": "Forecast",
+    "ability": [],
     "weight": "0.8 kg",
     "stats": {
       "hp": "70",
@@ -7005,7 +7037,10 @@
     "no": 354,
     "name": "Banette",
     "made_in": "Generation III",
-    "type": "Ghost",
+    "type": [
+      "Ghost",
+      "Unknown"
+    ],
     "ability": [
       "Insomnia",
       "Cursed Body"
@@ -7024,7 +7059,10 @@
     "no": 354,
     "name": "Mega Banette",
     "made_in": "Generation VI",
-    "type": "Unknown",
+    "type": [
+      "Ghost",
+      "Unknown"
+    ],
     "ability": [
       "Prankster"
     ],
@@ -7106,10 +7144,13 @@
     "no": 359,
     "name": "Absol",
     "made_in": "Generation III",
-    "type": "Dark",
+    "type": [
+      "Dark",
+      "Unknown"
+    ],
     "ability": [
-      "Pressure",
-      "Justified"
+      "Justified",
+      "Pressure"
     ],
     "weight": "47.0 kg",
     "stats": {
@@ -7125,7 +7166,10 @@
     "no": 359,
     "name": "Mega Absol",
     "made_in": "Generation VI",
-    "type": "Unknown",
+    "type": [
+      "Dark",
+      "Unknown"
+    ],
     "ability": [
       "Magic Bounce"
     ],
@@ -7175,10 +7219,13 @@
     "no": 362,
     "name": "Glalie",
     "made_in": "Generation III",
-    "type": "Ice",
+    "type": [
+      "Ice",
+      "Unknown"
+    ],
     "ability": [
-      "Inner Focus",
-      "Moody"
+      "Moody",
+      "Inner Focus"
     ],
     "weight": "256.5 kg",
     "stats": {
@@ -7194,7 +7241,10 @@
     "no": 362,
     "name": "Mega Glalie",
     "made_in": "Generation VI",
-    "type": "Unknown",
+    "type": [
+      "Ice",
+      "Unknown"
+    ],
     "ability": [
       "Refrigerate"
     ],

@@ -80,10 +80,13 @@ Data hasil tersimpan di ```main_data.json``` dengan format seperti ini :
     "no": 9,
     "name": "Blastoise",
     "made_in": "Generation I",
-    "type": "Water",
+    "type": [
+      "Water",
+      "Unknown"
+    ],
     "ability": [
-      "Torrent",
-      "Rain Dish"
+      "Rain Dish",
+      "Torrent"
     ],
     "weight": "85.5 kg",
     "stats": {
@@ -99,7 +102,10 @@ Data hasil tersimpan di ```main_data.json``` dengan format seperti ini :
     "no": 9,
     "name": "Mega Blastoise",
     "made_in": "Generation VI",
-    "type": "Unknown",
+    "type": [
+      "Water",
+      "Unknown"
+    ],
     "ability": [
       "Mega Launcher"
     ],
@@ -112,7 +118,7 @@ Data hasil tersimpan di ```main_data.json``` dengan format seperti ini :
       "spdef": "115",
       "spe": "78"
     }
-  }
+  },
 ...
 ]
 ```
