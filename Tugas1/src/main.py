@@ -27,7 +27,7 @@ def GetInitList():
     global pokemons
     # Grabbing initial Pokemon data (list of all Pokemon)
     # Request headers. Without this, Bulbapedia will reject the request (as error 403 Forbidden)
-    print("Requesting data from server...")
+    print("Requesting list of Pokemon from server...")
     hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
            }
@@ -73,8 +73,44 @@ def GetInitList():
 
     # Dumps data to JSON file
     with open(data_dir + "init_list.json","w") as f:
-        json.dump(pokemon_list,f)
+        json.dump(pokemon_list,f,indent=2)
     pokemons = pokemon_list
+
+    # Now, grabbing type chart
+    print("Requesting type chart from server...")
+    hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+           }
+    # Here comes the actual request sent to server
+    req = urllib.request.Request("https://bulbapedia.bulbagarden.net/wiki/Type",headers=hdr)
+    with urllib.request.urlopen(req) as response:
+        html = response.read()
+        soup = BeautifulSoup(html,'html.parser')
+    print("Parsing data...")
+    table = soup.find("span",attrs={"id" : "Type_chart"}).findNext("table").find_all("tr")
+    # Gets data header : types
+    a_type = table[1].find_all("a")
+    type_out = {}
+    def_type = []
+    for a in a_type:
+        def_type.append(a["title"])
+    # Now, loop remaining table rows.
+    for iter in range(2,len(table) - 1):
+        atk_type = (table[iter].find("a"))["title"]
+        type_out[atk_type] = {}
+        mult = table[iter].find_all("td")
+        count = 0
+        for elm in mult:
+            temp = (elm.contents[0])[1:-2]
+            if (temp == '\u00bd'): # \u00bd is Unicode for the fraction half. Your friendly JSON doesn't understand that
+                temp = 0.5
+            else:
+                temp = int(temp)
+            type_out[atk_type][def_type[count]] = temp
+            count = count + 1
+    # Dumps data to JSON file
+    with open(data_dir + "type_chart.json","w") as f:
+        json.dump(type_out,f,indent=2)
 
 def SingleScrape(index):
     global pokemons
